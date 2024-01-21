@@ -41,7 +41,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: infisical-secrets
-                  key: resis_url
+                  key: redis_url
             - name: PATH
               value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             - name: NEXT_PUBLIC_POSTHOG_API_KEY
