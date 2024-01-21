@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firefly
+  namespace: restricted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firefly
+  template:
+    metadata:
+      labels:
+        app: firefly
+    spec:
+      volumes:
+        - name: firefly-iii-upload
+          persistentVolumeClaim:
+            claimName: firefly-pvc
+      containers:
+        - name: firefly
+          image: fireflyiii/core
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+            name: web
+            protocol: TCP
+          volumeMounts:
+          - mountPath: "/var/www/html/storage/upload"
+            name: firefly-iii-upload
+          env:
+            - name: APP_ENV
+              value: "local"
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: firefly-secrets
+                  key: APP_KEY
+            - name: DB_HOST
+              value: "mysql-lb.databases.svc.cluster.local"
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: firefly-secrets
+                  key: DB_DATABASE
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: firefly-secrets
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: firefly-secrets
+                  key: DB_PASSWORD
+            - name: TRUSTED_PROXIES
+              value: "**"
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
+      volumes:
+        - name: firefly-iii-upload
+          persistentVolumeClaim:
+            claimName: firefly-pvc
