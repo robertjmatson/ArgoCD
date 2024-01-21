@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: databases
+spec:
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      volumes:
+        - name: influxdb-storage
+          persistentVolumeClaim:
+            claimName: influxdb-pvc
+      containers:
+        - name: influxdb
+          image: influxdb
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8086
+            name: db
+            protocol: TCP
+          env:
+            - name: DOCKER_INFLUXDB_INIT_MODE
+              value: setup
+            - name: DOCKER_INFLUXDB_INIT_USERNAME
+              value: root
+            - name: DOCKER_INFLUXDB_INIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-root
+                  key: INFLUX_INIT_PASSWORD
+            - name: DOCKER_INFLUXDB_INIT_ORG
+              value: robertjmatson
+            - name: DOCKER_INFLUXDB_INIT_BUCKET
+              value: lab
+          volumeMounts:
+            - mountPath: "/etc/influxdb2"
+              name: influxdb-storage
+              subPath: etc
+            - mountPath: "/var/lib/influxdb2"
+              name: influxdb-storage
+              subPath: var

@@ -1,0 +1,15 @@
+  GNU nano 6.2                                                                                                                              influx.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb-lb
+  namespace: databases
+spec:
+  selector:
+    app: influxdb
+  ports:
+    - name: influxdb
+      port: 8086
+      targetPort: 8086
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.194
