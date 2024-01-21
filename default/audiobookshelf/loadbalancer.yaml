@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: audiobookshelf-lb
+  namespace: default
+spec:
+  selector:
+    app: audiobookshelf
+  ports:
+    - name: audiobookshelf-web
+      port: 13378
+      targetPort: 80
+    - name: audiobookshelf-webreal
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.155

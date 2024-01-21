@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audiobookshelf
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audiobookshelf
+  template:
+    metadata:
+      labels:
+        app: audiobookshelf
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+      volumes:
+        - name: audiobookshelf-storage
+          persistentVolumeClaim:
+            claimName: audiobookshelf-pvc
+      containers:
+        - name: audiobookshelf
+          image: ghcr.io/advplyr/audiobookshelf:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: web
+            protocol: TCP
+          volumeMounts:
+          - name: data
+            mountPath: /app/data
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
+          volumeMounts:
+            - mountPath: "/audiobooks"
+              name: audiobookshelf-storage
+              subPath: audiobooks
+            - mountPath: "/podcasts"
+              name: audiobookshelf-storage
+              subPath: podcasts
+            - mountPath: "/config"
+              name: audiobookshelf-storage
+              subPath: config
+            - mountPath: "/metadata"
+              name: audiobookshelf-storage
+              subPath: metadata
