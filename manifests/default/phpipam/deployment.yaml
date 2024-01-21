@@ -4,6 +4,7 @@ metadata:
   name: ipam
   namespace: default
 spec:
+  revisionHistoryLimit: 0
   replicas: 1
   selector:
     matchLabels:

@@ -4,6 +4,7 @@ metadata:
   name: firefly
   namespace: restricted
 spec:
+  revisionHistoryLimit: 0
   replicas: 1
   selector:
     matchLabels:

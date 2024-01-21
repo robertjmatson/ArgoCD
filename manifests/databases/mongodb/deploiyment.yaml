@@ -4,6 +4,7 @@ metadata:
   name: mongodb
   namespace: databases
 spec:
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app: mongodb

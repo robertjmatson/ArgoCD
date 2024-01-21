@@ -4,6 +4,7 @@ metadata:
   name: postgres
   namespace: databases
 spec:
+  revisionHistoryLimit: 0
   replicas: 1
   selector:
     matchLabels:
