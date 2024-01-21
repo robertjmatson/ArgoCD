@@ -42,7 +42,6 @@ spec:
                 secretKeyRef:
                   name: infisical-secrets
                   key: resis_url
-              value: "redis-lb.databases.svc.cluster.local:6379"
             - name: PATH
               value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
             - name: NEXT_PUBLIC_POSTHOG_API_KEY
