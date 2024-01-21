@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipam
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipam
+  template:
+    metadata:
+      labels:
+        app: ipam
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - name: ipam
+          image: phpipam/phpipam-www:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: ipam-web
+            protocol: TCP
+          - containerPort: 443
+            name: ipam-https
+            protocol: TCP
+          env:
+            - name: IPAM_DATABASE_HOST
+              value: mysql-lb.databases.svc.cluster.local
+            - name: IPAM_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: phpipam-secrets
+                  key: IPAM_DATABASE_NAME
+            - name: IPAM_DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: phpipam-secrets
+                  key: IPAM_DATABASE_PASS
+            - name: IPAM_DATABASE_PORT
+              value: '3306'
+            - name: IPAM_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: phpipam-secrets
+                  key: IPAM_DATABASE_USER
+            - name: IPAM_DATABASE_WEBHOST
+              value: localhost
+            - name: PATH
+              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          readinessProbe:
+            httpGet:
+              port: ipam-web
+              path: /
+
