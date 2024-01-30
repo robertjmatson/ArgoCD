@@ -19,20 +19,38 @@ spec:
             claimName: nextcloud-pvc
       containers:
         - name: nextcloud
-          image: lscr.io/linuxserver/nextcloud
+          image: nextcloud
           imagePullPolicy: Always
           ports:
           - containerPort: 443
             name: web
             protocol: TCP
           volumeMounts:
-          - mountPath: "/config"
+          - mountPath: "/var/www/html"
             name: nextcloud-storage
-            subPath: config
+            subPath: html
           - mountPath: "/data"
             name: nextcloud-storage
             subPath: data
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_HOST
+              value: "mysql-lb.databases.svc.cluster.local"
           readinessProbe:
             httpGet:
               port: web
-              path: /
+              path: 443
