@@ -50,7 +50,3 @@ spec:
                   key: MYSQL_DATABASE
             - name: MYSQL_HOST
               value: "mysql-lb.databases.svc.cluster.local"
-          readinessProbe:
-            httpGet:
-              port: web
-              path: 443
