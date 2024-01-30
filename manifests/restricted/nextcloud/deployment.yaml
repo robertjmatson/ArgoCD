@@ -27,10 +27,10 @@ spec:
             protocol: TCP
           volumeMounts:
           - mountPath: "/config"
-            name: nextcloud-pvc
+            name: nextcloud-storage
             subPath: config
           - mountPath: "/data"
-            name: nextcloud-pvc
+            name: nextcloud-storage
             subPath: data
           readinessProbe:
             httpGet:
