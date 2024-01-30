@@ -43,11 +43,11 @@ spec:
                 secretKeyRef:
                   name: nextcloud-secrets
                   key: MYSQL_USER
-            - name: MYSQL_PASSWORD
+            - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-secrets
-                  key: MYSQL_PASSWORD
+                  key: MYSQL_DATABASE
             - name: MYSQL_HOST
               value: "mysql-lb.databases.svc.cluster.local"
           readinessProbe:
