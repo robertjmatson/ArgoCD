@@ -16,5 +16,5 @@ spec:
         envSlug: prod
         secretsPath: "/"
   managedSecretReference:
-    secretName: firefly-nextcloud # <-- the name of kubernetes secret that will be created
+    secretName: nextcloud-secrets # <-- the name of kubernetes secret that will be created
     secretNamespace: restricted # <-- where the kubernetes secret should be created
