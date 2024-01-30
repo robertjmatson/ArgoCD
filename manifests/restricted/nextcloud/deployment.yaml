@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: restricted
+spec:
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      volumes:
+        - name: nextcloud-storage
+          persistentVolumeClaim:
+            claimName: nextcloud-pvc
+      containers:
+        - name: nextcloud
+          image: lscr.io/linuxserver/nextcloud
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 443
+            name: web
+            protocol: TCP
+          volumeMounts:
+          - mountPath: "/config"
+            name: nextcloud-pvc
+            subPath: config
+          - mountPath: "/data"
+            name: nextcloud-pvc
+            subPath: data
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
