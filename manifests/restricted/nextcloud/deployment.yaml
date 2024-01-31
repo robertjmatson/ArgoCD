@@ -28,10 +28,6 @@ spec:
           volumeMounts:
           - mountPath: "/var/www/html"
             name: nextcloud-storage
-            subPath: html
-          - mountPath: "/data"
-            name: nextcloud-storage
-            subPath: data
           env:
             - name: MYSQL_PASSWORD
               valueFrom:
