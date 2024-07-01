@@ -11,7 +11,7 @@ spec:
   authentication:
     serviceToken:
       serviceTokenSecretReference:
-        secretName: infisical-book
+        secretName: infisical-bookstack
         secretNamespace: restricted
       secretsScope:
         envSlug: prod

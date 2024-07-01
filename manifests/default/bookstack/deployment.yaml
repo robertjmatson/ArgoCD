@@ -31,13 +31,36 @@ spec:
             name: web
             protocol: TCP
           env:
-            - name: 
-              value:
-            - name: 
+            - name: PUID
+              value: 1000
+            - name: GPID
+              value: 1000
+            - name: TZ
+              value: "America/Chicago"
+            - name: APP_URL
               valueFrom:
                 secretKeyRef:
-                  name:
-                  key:
+                  name: book-secrets
+                  key: APP_URL
+            - name: DB_HOST
+              value: "mysql-lb.databases.svc.cluster.local"
+            - name: DB_PORT
+              value: 3306
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: book-secrets
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: book-secrets
+                  key: DB_PASS
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: book-secrets
+                  key: DB_DATABASE
           readinessProbe:
             httpGet:
               port: web
