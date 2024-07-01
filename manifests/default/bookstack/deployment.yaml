@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstack
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookstack
+  template:
+    metadata:
+      labels:
+        app: bookstack
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+      volumes:
+        - name: bookstack-storage
+          persistentVolumeClaim:
+            claimName: bookstack-pvc
+      containers:
+        - name: bookstack
+          image: lscr.io/linuxserver/bookstack
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 6875
+            name: web
+            protocol: TCP
+          env:
+            - name: 
+              value:
+            - name: 
+              valueFrom:
+                secretKeyRef:
+                  name:
+                  key:
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
+          volumeMounts:
+            - mountPath: "/config"
+              name: bookstack-storage
+              subPath: config
