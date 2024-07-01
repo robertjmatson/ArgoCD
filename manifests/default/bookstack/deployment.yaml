@@ -32,9 +32,9 @@ spec:
             protocol: TCP
           env:
             - name: PUID
-              value: 1000
+              value: "1000"
             - name: GPID
-              value: 1000
+              value: "1000"
             - name: TZ
               value: "America/Chicago"
             - name: APP_URL
@@ -45,7 +45,7 @@ spec:
             - name: DB_HOST
               value: "mysql-lb.databases.svc.cluster.local"
             - name: DB_PORT
-              value: 3306
+              value: "3306"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
