@@ -17,5 +17,5 @@ spec:
         envSlug: prod
         secretsPath: "/"
   managedSecretReference:
-    secretName: book-secrets # <-- the name of kubernetes secret that will be created
+    secretName: bookstack-secrets # <-- the name of kubernetes secret that will be created
     secretNamespace: default # <-- where the kubernetes secret should be created
