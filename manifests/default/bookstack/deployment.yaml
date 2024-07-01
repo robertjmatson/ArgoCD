@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+]apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bookstack
@@ -43,7 +43,7 @@ spec:
                   name: bookstack-secrets
                   key: APP_URL
             - name: DB_HOST
-              value: "mysql-lb.databases.svc.cluster.local"
+              value: "10.10.0.190"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
