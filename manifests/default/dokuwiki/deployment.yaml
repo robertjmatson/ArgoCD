@@ -42,5 +42,5 @@ spec:
               path: /
           volumeMounts:
             - mountPath: "/config"
-              name: APPLICATION-storage
+              name: dokuwiki-storage
               subPath: config
