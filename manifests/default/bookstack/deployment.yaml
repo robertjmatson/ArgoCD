@@ -41,7 +41,7 @@ spec:
             - name: DB_HOST
               value: mysql-lb.databases.svc.cluster.local
             - name: DB_PORT
-              value: '3306'
+              value: 3306
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
