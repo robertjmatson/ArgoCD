@@ -41,7 +41,7 @@ spec:
             - name: DB_HOST
               value: mysql-lb.databases.svc.cluster.local
             - name: DB_PORT
-              value: 3306
+              value: '3306'
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -57,6 +57,8 @@ spec:
                 secretKeyRef:
                   name: bookstack-secrets
                   key: DB_DATABASE
+            - name: APP_DEBUG
+              value: true
           readinessProbe:
             httpGet:
               port: web
