@@ -29,7 +29,7 @@ spec:
           env:
             - name: PUID
               value: '1000'
-            - name: GPID
+            - name: PGID
               value: '1000'
             - name: TZ
               value: "Etc/UTC"
