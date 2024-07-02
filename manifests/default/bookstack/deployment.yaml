@@ -58,7 +58,7 @@ spec:
                   name: bookstack-secrets
                   key: DB_DATABASE
             - name: APP_DEBUG
-              value: true
+              value: 'true'
           readinessProbe:
             httpGet:
               port: web
