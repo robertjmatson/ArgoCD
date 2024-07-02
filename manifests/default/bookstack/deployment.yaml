@@ -14,10 +14,6 @@ spec:
       labels:
         app: bookstack
     spec:
-      tolerations:
-        - key: "node-role.kubernetes.io/master"
-          operator: "Exists"
-          effect: "NoSchedule"
       volumes:
         - name: bookstack-storage
           persistentVolumeClaim:
@@ -36,7 +32,7 @@ spec:
             - name: GPID
               value: '1000'
             - name: TZ
-              value: "America/Chicago"
+              value: "Etc/UTC"
             - name: APP_URL
               valueFrom:
                 secretKeyRef:
@@ -68,4 +64,3 @@ spec:
           volumeMounts:
             - mountPath: "/config"
               name: bookstack-storage
-              subPath: config
