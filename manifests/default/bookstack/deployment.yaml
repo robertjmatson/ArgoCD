@@ -57,6 +57,56 @@ spec:
                 secretKeyRef:
                   name: bookstack-secrets
                   key: DB_DATABASE
+            - name: LDAP_BASE_DN
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_BASE_DN
+            - name: LDAP_DISPLAY_NAME_ATTRIBUTE
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_DISPLAY_NAME_ATTRIBUTE
+            - name: LDAP_DN
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_DN
+            - name: LDAP_EMAIL_ATTRIBUTE
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_EMAIL_ATTRIBUTE
+            - name: LDAP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_PASS
+            - name: LDAP_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_SERVER
+            - name: LDAP_START_TLS
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_START_TLS
+            - name: LDAP_THUMBNAIL_ATTRIBUTE
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_THUMBNAIL_ATTRIBUTE
+            - name: LDAP_USER_FILTER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_USER_FILTER
+            - name: LDAP_VERSION
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: LDAP_VERSION
             - name: APP_DEBUG
               value: 'true'
           readinessProbe:
