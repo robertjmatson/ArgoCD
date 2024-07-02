@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: APPLICATION
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: APPLICATION
+  template:
+    metadata:
+      labels:
+        app: APPLICATION
+    spec:
+      volumes:
+        - name: APPLICATION-storage
+          persistentVolumeClaim:
+            claimName: APPLICATION-pvc
+      containers:
+        - name: APPPLICATION
+          image: IMAGE:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: APPLICATION-web
+            protocol: TCP
+          - containerPort: 443
+            name: APPLICATION-https
+            protocol: TCP
+          env:
+            - name: DATABASE_HOST
+              value: mysql-lb.databases.svc.cluster.local
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: APPLICATION-secrets
+                  key: DATABASE_NAME
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: APPLICATION-secrets
+                  key: DATABASE_PASS
+            - name: DATABASE_PORT
+              value: '3306'
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: APPLICATION-secrets
+                  key: DATABASE_USER
+            - name: KEY
+              value: VALUE
+            - name: KEY2
+              value: VALUE
+          readinessProbe:
+            httpGet:
+              port: APPLICATION-web
+              path: /
+          volumeMounts:
+            - mountPath: "/path1"
+              name: APPLICATION-storage
+              subPath: path1
+            - mountPath: "/path2"
+              name: APPLICATION-storage
+              subPath: path2

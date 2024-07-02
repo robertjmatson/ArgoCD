@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: bookstack-lb
+  name: dokuwiki-lb
   namespace: default
 spec:
   selector:
-    app: bookstack
+    app: dokuwiki
   ports:
-    - name: bookstack-web
+    - name: dokuwiki-web
       port: 80
       targetPort: 80
-    - name: bookstack-https
+    - name: dokuwiki-https
       port: 443
-      targetPort: 80
+      targetPort: 443
   type: LoadBalancer
-  loadBalancerIP: 10.10.0.156
+  loadBalancerIP: 10.10.0.157

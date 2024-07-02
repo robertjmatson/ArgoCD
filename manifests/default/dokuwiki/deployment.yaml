@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokuwiki
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dokuwiki
+  template:
+    metadata:
+      labels:
+        app: dokuwiki
+    spec:
+      volumes:
+        - name: dokuwiki-storage
+          persistentVolumeClaim:
+            claimName: dokuwiki-pvc
+      containers:
+        - name: dokuwiki
+          image: lscr.io/linuxserver/dokuwiki:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: dokuwiki-web
+            protocol: TCP
+          - containerPort: 443
+            name: dokuwiki-https
+            protocol: TCP
+          env:
+            - name: PUID
+              value: '1000'
+            - name: PGID
+              value: '1000'
+            - name: TZ
+              value: "Etc/UTC"
+          readinessProbe:
+            httpGet:
+              port: dokuwiki-web
+              path: /
+          volumeMounts:
+            - mountPath: "/config"
+              name: dokuwiki-storage
+              subPath: config
