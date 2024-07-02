@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: APPLICATION-lb
+  name: dokuwiki-lb
   namespace: default
 spec:
   selector:
-    app: APPLICATION
+    app: dokuwiki
   ports:
-    - name: APPLICATION-web
+    - name: dokuwiki-web
       port: 80
       targetPort: 80
-    - name: APPLICATION-https
+    - name: dokuwiki-https
       port: 443
       targetPort: 443
   type: LoadBalancer
