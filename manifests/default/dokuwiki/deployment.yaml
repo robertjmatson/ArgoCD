@@ -18,6 +18,9 @@ spec:
         - name: dokuwiki-storage
           persistentVolumeClaim:
             claimName: dokuwiki-pvc
+        - name: dokuwiki-nfs-storage
+          persistantVolumeClaim:
+            claimName: dokuwiki-nfs-pvc
       containers:
         - name: dokuwiki
           image: lscr.io/linuxserver/dokuwiki:latest
@@ -44,3 +47,5 @@ spec:
             - mountPath: "/config"
               name: dokuwiki-storage
               subPath: config
+            - mountPath: "/nfs"
+              name: dokuwiki-nfs-storage
