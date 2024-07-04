@@ -20,7 +20,7 @@ spec:
             claimName: dokuwiki-pvc
         - name: dokuwiki-nfs-storage
           nfs:
-            server: vault01
+            server: 192.168.49.17
             path: /mnt/user/dokuwiki
             readOnly: false
       containers:
