@@ -49,5 +49,5 @@ spec:
             - mountPath: "/config"
               name: dokuwiki-storage
               subPath: config
-            - mountPath: /nfs
+            - mountPath: "/nfs"
               name: dokuwiki-nfs-storage
