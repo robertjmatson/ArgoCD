@@ -21,7 +21,7 @@ spec:
         - name: dokuwiki-nfs-storage
           nfs:
             server: vault01
-            path: /mnt/user/wiki
+            path: /mnt/user/dokuwiki
             readOnly: false
       containers:
         - name: dokuwiki
