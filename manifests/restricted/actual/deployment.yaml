@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: actualbudget
   namespace: restricted
-s        pec:
+spec:
   revisionHistoryLimit: 0
   replicas: 1
   selector:
