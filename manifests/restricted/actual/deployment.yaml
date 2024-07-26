@@ -24,11 +24,11 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 5006
-            name: actualbudget-web
+            name: actual-web
             protocol: TCP
           readinessProbe:
             httpGet:
-              port: actualbudget-web
+              port: actual-web
               path: /
           volumeMounts:
             - mountPath: "/data"

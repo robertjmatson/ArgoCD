@@ -7,7 +7,7 @@ spec:
   selector:
     app: actualbudget
   ports:
-    - name: actualbudget-web
+    - name: actual-web
       port: 80
       targetPort: 5006
   type: LoadBalancer
