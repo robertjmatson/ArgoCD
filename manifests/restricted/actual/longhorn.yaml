@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: actualbudge-pvc
+  name: actualbudget-pvc
   namespace: restricted
 spec:
   accessModes:
