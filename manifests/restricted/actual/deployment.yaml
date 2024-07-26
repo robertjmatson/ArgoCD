@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actualbudget
+  namespace: restricted
+s        pec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: actualbudget
+  template:
+    metadata:
+      labels:
+        app: actualbudget
+    spec:
+      volumes:
+        - name: actualbudget-storage
+          persistentVolumeClaim:
+            claimName: actualbudget-pvc
+      containers:
+        - name: actualbudget
+          image: actualbudget/actual-server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5006
+            name: actualbudget-web
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: actualbudget-web
+              path: /
+          volumeMounts:
+            - mountPath: "/data"
+              name: actualbudget-storage
+
