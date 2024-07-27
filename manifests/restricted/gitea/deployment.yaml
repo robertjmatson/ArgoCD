@@ -43,7 +43,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: gitea-secrets
-                  key: DATABASE_PASS
+                  key: DATABASE_USER
             - name: GITEA__database__PASSWD
               valueFrom:
                 secretKeyRef:
