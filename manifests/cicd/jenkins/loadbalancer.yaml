@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: APPLICATION-lb
+  namespace: default
+spec:
+  selector:
+    app: APPLICATION
+  ports:
+    - name: APPLICATION-web
+      port: 80
+      targetPort: 80
+    - name: APPLICATION-https
+      port: 443
+      targetPort: 443
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.0
