@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gitea
-  namespace: default
+  namespace: cicd
 spec:
   revisionHistoryLimit: 0
   replicas: 1
