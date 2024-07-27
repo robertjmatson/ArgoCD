@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      volumes:
+        - name: gitea-storage
+          persistentVolumeClaim:
+            claimName: gitea-pvc
+      containers:
+        - name: gitea
+          image: gitea/gitea:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+            name: gitea-web
+            protocol: TCP
+          - containerPort: 22
+            name: gitea-ssh
+            protocol: TCP
+          env:
+            - name: GITEA__database__DB_TYPE
+              value: mysql
+            - name: GITEA__database__HOST
+              value: mysql-lb.databases.svc.cluster.local
+            - name: GITEA__database__NAME
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-secrets
+                  key: DATABASE_NAME
+            - name: GITEA__database__USER
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-secrets
+                  key: DATABASE_PASS
+            - name: GITEA__database__PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-secrets
+                  key: DATABASE_PASS
+          readinessProbe:
+            httpGet:
+              port: gitea-web
+              path: /
+          volumeMounts:
+            - mountPath: "/data"
+              name: gitea-storage
