@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: cloud
+  labels:
+    app: nextcloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      volumes:
+        - name: nextcloud-storage
+          persistentVolumeClaim:
+            claimName: nextcloud-pvc
+      containers:
+        - name: nextcloud
+          image: nextcloud:latest
+          imagePullPolicy: Always
+          lifecycle: ##Optional: should run a nextcloud cronjob for the installed apache browser##
+            postStart:
+              exec:
+                command:
+                - "sh"
+                - "-c"
+                - "apt-get update && apt-get install -y openrc && start-stop-daemon --start --background --pidfile /cron.pid --exec /cron.sh"
+          resources:
+            limits:
+              memory: "1000Mi"
+#             cpu: "500m"
+            requests:
+              memory: "800Mi"
+#             cpu: "300m"
+          ports:
+          - containerPort: 80
+            name: nextcloud-web
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: MYSQL_HOST
+              value: mariadb
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DATABASE
+                  name: nextcloud-secrets
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: nextcloud-secrets
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: nextcloud-secrets
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: ADMIN_PASSWORD
+                  name: nextcloud-secrets
+            - name: NEXTCLOUD_ADMIN_USER
+              value: "admin"
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              valueFrom:
+                secretKeyRef:
+                  key: TRUSTED_DOMAINS
+                  name: nextcloud-secrets
+          volumeMounts: 
+            - mountPath: "/var/www/html/custom_apps"
+              name: nextcloud-storage
+              subPath: apps        
+            - mountPath: "/var/www/html/config"
+              name: nextcloud-storage
+              subPath: config      
+            - mountPath: "/var/www/html/data"
+              name: nextcloud-storage
+              subPath: data     
+            - mountPath: "/var/www/html"
+              name: nextcloud-storage
+              subPath: html                   

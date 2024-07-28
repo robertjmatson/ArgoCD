@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: cloud
+  labels:
+    app: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      volumes:
+        - name: maria-storage
+          persistentVolumeClaim:
+            claimName: maria-pvc
+      containers:
+      - name: mariadb
+        image: mariadb:10.6
+        ports:
+          - containerPort: 3306
+        resources:
+          limits:
+            memory: "1000Mi"
+          requests:
+            memory: "600Mi"
+        env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_DATABASE
+                  name: nextcloud-secrets
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: nextcloud-secrets
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: nextcloud-secrets
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: nextcloud-secrets
+        volumeMounts:
+        - name: maria-storage
+          mountPath: /var/lib/mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: cloud
+  labels:
+    app: mariadb
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mariadb
