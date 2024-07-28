@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zabbix-server-lb
+  namespace: monitor
+spec:
+  selector:
+    app: zabbix-server
+  ports:
+    - name: zabbix-serve
+      port: 10051
+      targetPort: 10051
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.158
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zabbix-web-lb
+  namespace: monitor
+spec:
+  selector:
+    app: zabbix-web
+  ports:
+    - name: zabbix-http
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.159

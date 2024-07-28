@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zabbix-server
+  namespace: monitor
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zabbix-server
+  template:
+    metadata:
+      labels:
+        app: zabbix-server
+    spec:
+      hostname: "zabbix-server" 
+      volumes:
+        - name: zabbix-server-storage
+          persistentVolumeClaim:
+            claimName: zabbix-server-pvc
+      containers:
+        - name: zabbix-server
+          image: zabbix/zabbix-server-pgsql:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 10051
+            name: zabbix-serve
+          env:
+            - name: DB_SERVER_HOST
+              value: postgres-lb.databases.svc.cluster.local
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: zabbix-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zabbix-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: zabbix-secrets
+                  key: POSTGRES_USER
+          volumeMounts:
+            - mountPath: "/var/lib/zabbix"
+              name: zabbix-server-storage
+              subPath: zabbix
+            - mountPath: "/var/lib/zabbix/snmptraps"
+              name: zabbix-server-storage
+              subPath: snmp
+            - mountPath: "/var/lib/zabbix/export"
+              name: zabbix-server-storage
+              subPath: export
+        - name: zabbix-agent1
+          image: zabbix/zabbix-agent:latest
+          imagePullPolicy: Always
+          env:
+            - name: ZBX_SERVER_HOST
+              value: localhost
+            - name: ZBX_HOSTNAME
+              value: "zabbix-server"
+            - name: ZBX_SERVER_PORT
+              value: "10051"
+            - name: ZBX_SERVER_ACTIVE
+              value: zabbix-server
+
+
