@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openproject
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openproject
+  template:
+    metadata:
+      labels:
+        app: openproject
+    spec:
+      volumes:
+        - name: openproject-storage
+          persistentVolumeClaim:
+            claimName: openproject-pvc
+      containers:
+        - name: openproject
+          image: openproject/openproject:14.3
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: openproject-web
+            protocol: TCP
+          env:
+            - name: OPENPROJECT_DEFAULT__LANGUAGE
+              value: en
+            - name: OPENPROJECT_SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: openproject-secrets
+                  key: SECRETKEY
+            - name: OPENPROJECT_HTTPS
+              value: 'false'
+            - name: OPENPROJECT_HOST__NAME
+              valueFrom:
+                secretKeyRef:
+                  name: openproject-secrets
+                  key: HOST_NAME
+          volumeMounts:
+            - mountPath: "/var/openproject/pgdata"
+              name: openproject-storage
+              subPath: pgdata
+            - mountPath: "/var/openproject/assets"
+              name: openproject-storage
+              subPath: assets
