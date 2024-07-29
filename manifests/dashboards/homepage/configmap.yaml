@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
   annotations:
-    argo.argoproj.io/hook: skip
+    argo.argoproj.io/hook: Skip
     # This file is skipped due to hook in argocd but must be created and edited for Home Page to run
 data:
   kubernetes.yaml: |
