@@ -5,9 +5,9 @@ metadata:
   namespace: dashboards
   labels:
     app.kubernetes.io/name: homepage
+  # This file is skipped due to hook in argocd but must be created and edited for Home Page to run
   annotations:
-    argo.argoproj.io/hook: Skip
-    # This file is skipped due to hook in argocd but must be created and edited for Home Page to run
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 data:
   kubernetes.yaml: |
     mode: cluster
