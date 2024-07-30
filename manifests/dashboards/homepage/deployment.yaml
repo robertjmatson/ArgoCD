@@ -18,7 +18,7 @@ spec:
         - name: homepage-nfs-storage
           nfs:
             server: 192.168.49.17
-            path: /mnt/user/dokuwiki
+            path: /mnt/user/kubernetes/homepage
             readOnly: false
       containers:
         - name: homepage
@@ -33,5 +33,5 @@ spec:
               port: homepage-web
               path: /
           volumeMounts:
-            - mountPath: "/app/config/"
+            - mountPath: "/app/config"
               name: homepage-nfs-storage
