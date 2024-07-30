@@ -9,3 +9,7 @@ kind: Kustomization
 resources:
 - deployment.yaml
 - loadbalancer.yaml
+- cluster.yaml
+- ingress.yaml
+- serviceaccount.yaml
+- configmap.yaml
