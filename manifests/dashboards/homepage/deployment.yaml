@@ -33,28 +33,5 @@ spec:
               port: homepage-web
               path: /
           volumeMounts:
-            - mountPath: /app/config/custom.js
+            - mountPath: "/app/config/"
               name: homepage-nfs-storage
-              subPath: custom.js
-            - mountPath: /app/config/custom.css
-              name: homepage-nfs-storage
-              subPath: custom.css
-            - mountPath: /app/config/bookmarks.yaml
-              name: homepage-nfs-storage
-              subPath: bookmarks.yaml
-            - mountPath: /app/config/docker.yaml
-              name: homepage-nfs-storage
-              subPath: docker.yaml
-            - mountPath: /app/config/kubernetes.yaml
-              name: homepage-nfs-storage
-              subPath: kubernetes.yaml
-            - mountPath: /app/config/services.yaml
-              name: homepage-nfs-storage
-              subPath: services.yaml
-            - mountPath: /app/config/settings.yaml
-              name: homepage-nfs-storage
-              subPath: settings.yaml
-            - mountPath: /app/config/widgets.yaml
-              name: homepage-nfs-storage
-              subPath: widgets.yaml
-
