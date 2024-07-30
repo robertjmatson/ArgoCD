@@ -10,4 +10,4 @@ commonLabels:
 
 resources:
 - deployment.yaml
-- service.yaml
+- loadbalancer.yaml
