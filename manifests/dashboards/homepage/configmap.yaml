@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
   # This file is skipped due to hook in argocd but must be created and edited for Home Page to run
-  annotations:
+  #annotations:
     argocd.argoproj.io/compare-options: IgnoreExtraneous
 data:
   kubernetes.yaml: |

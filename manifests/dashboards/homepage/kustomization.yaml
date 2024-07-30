@@ -12,4 +12,4 @@ resources:
 - cluster.yaml
 - ingress.yaml
 - serviceaccount.yaml
-  #- configmap.yaml
+- configmap.yaml
