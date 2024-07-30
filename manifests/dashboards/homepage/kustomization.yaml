@@ -5,8 +5,6 @@ kind: Kustomization
 
 # Example configuration for the webserver
 # at https://github.com/monopole/hello
-commonLabels:
-  app: hello
 
 resources:
 - deployment.yaml
