@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exdiary
+  namespace: fitness
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exdiary
+  template:
+    metadata:
+      labels:
+        app: exdiary
+    spec:
+      volumes:
+        - name: exdiary-storage
+          persistentVolumeClaim:
+            claimName: exdiary-pvc
+      containers:
+        - name: exdiary
+          image: aceberg/exercisediary:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8851
+            name: exdiary-web
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: exdiary-web
+              path: /
+          volumeMounts:
+            - mountPath: "/data/ExerciseDiary"
+              name: exdiary-storage
+              subPath: path1
