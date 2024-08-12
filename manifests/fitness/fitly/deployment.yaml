@@ -34,7 +34,7 @@ spec:
             - name: TZ
               value: 'America/Chicago'
             - name: TIMEOUT
-              value: 1200
+              value: '1200'
             - name: DASH_DEBUG
               value: true
           readinessProbe:
