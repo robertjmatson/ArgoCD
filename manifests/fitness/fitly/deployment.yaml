@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fitly
-  namespace: fitly
+  namespace: fitness
 spec:
   revisionHistoryLimit: 0
   replicas: 1
