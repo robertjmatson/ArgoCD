@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fitly
+  namespace: fitly
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fitly
+  template:
+    metadata:
+      labels:
+        app: fitly
+    spec:
+      volumes:
+        - name: fitly-storage
+          persistentVolumeClaim:
+            claimName: fitly-pvc
+      containers:
+        - name: fitly
+          image: ethanopp/fitly:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+            name: fitly-web
+            protocol: TCP
+          env:
+            - name: MODULE_NAME
+              value: 'src.fitly.app'
+            - name: VARIABLE_NAME
+              value: server
+            - name: TZ
+              value: 'America/Chicago'
+            - name: TIMEOUT
+              value: 1200
+            - name: DASH_DEBUG
+              value: true
+          readinessProbe:
+            httpGet:
+              port: fitly-web
+              path: /
+          volumeMounts:
+            - mountPath: "/app/config"
+              name: fitly-storage
