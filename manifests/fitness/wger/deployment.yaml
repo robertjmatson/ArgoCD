@@ -22,6 +22,7 @@ spec:
         - name: wger
           image: wger/server:latest
           imagePullPolicy: Always
+          pcommand: ["/start-beat & /start-worker"]
           ports:
           - containerPort: 8000
             name: wger-web
@@ -174,19 +175,3 @@ spec:
             - mountPath: "/home/wger/media"
               name: wger-storage
               subPath: media
-        - name: celeryworker
-          image: wger/server:latest
-          imagePullPolicy: Always
-          command: ["/start-worker"]
-          volumeMounts:
-            - mountPath: "home/wger/media"
-              name: wger-storage
-              subPath: media
-        - name: celerybeat
-          image: wger/server:latest
-          imagePullPolicy: Always
-          command: ["/start-beat"]
-          volumeMounts:
-            - mountPath: "home/wger/beat/"
-              name: wger-storage
-              subPath: beat
