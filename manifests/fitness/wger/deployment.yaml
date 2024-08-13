@@ -22,7 +22,7 @@ spec:
         - name: wger
           image: wger/server:latest
           imagePullPolicy: Always
-          pcommand: ["/start-beat & /start-worker"]
+          command: ["/start-beat & /start-worker"]
           ports:
           - containerPort: 8000
             name: wger-web
