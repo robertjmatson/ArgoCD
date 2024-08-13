@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb
+  namespace: fitness
+  labels:
+    app: postgresdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      labels:
+        app: postgresdb
+    spec:
+      volumes:
+        - name: wgerpostgres-storage
+          persistentVolumeClaim:
+            claimName: wgerpostgres-pvc
+      containers:
+      - name: postgresdb
+        image: postgres:15-alpine
+        ports:
+          - containerPort: 5432
+        resources:
+          limits:
+            memory: "1000Mi"
+          requests:
+            memory: "600Mi"
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_USER
+                name: wger-secrets
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: wger-secrets
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_DB
+                name: wger-secrets
+        volumeMounts:
+        - name: wgerpostgres-storage
+          mountPath: /var/lib/postgres/data/

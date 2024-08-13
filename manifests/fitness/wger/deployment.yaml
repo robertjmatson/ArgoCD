@@ -1,0 +1,215 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wger
+  namespace: fitness
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wger
+  template:
+    metadata:
+      labels:
+        app: wger
+    spec:
+      volumes:
+        - name: wger-storage
+          persistentVolumeClaim:
+            claimName: wger-pvc
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+      containers:
+        - name: wger
+          image: wger/server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8000
+            name: wger-web
+            protocol: TCP
+          env:
+            - name: DJANGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: wger-secrets
+            - name: DJANGO_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: wger-secrets
+            - name: DJANGO_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_DB
+                  name: wger-secrets
+            - name: DJANGO_DB_HOST
+              value: postgresdb
+            - name: DJANGO_DB_ENGINE
+              value: 'django.db.backends.postgresql'
+            - name: DJANGO_DB_PORT
+              value: '5432'
+            - name: DJANGO_DEBUG
+              value: 'True'
+            - name: DJANGO_PERFORM_MIGRATIONS
+              value: 'True'
+            - name: DJANGO_CLEAR_STATIC_FIRST
+              value: 'True'
+            - name: DJANGO_CACHE_TIMEOUT
+              value: '1206000'
+            - name: DJANGO_CACHE_LOCATION
+              value: 'redis://cache:6379/1'
+            - name: DJANGO_CACHE_CLIENT_CLASS
+              value: 'django_redis.client.DefaultClient'
+            - name: DJANGO_CASH_BACKEND
+              value: 'django_redis.cache.RedisCache'
+            - name: AXES_ENABLED
+              value: 'True'
+            - name: AXES_FAILURE_LIMIT
+              value: '10'
+            - name: AXES_COOLOFF_TIME
+              value: '30'
+            - name: AXES_HANDLER
+              value: 'axes.handlers.cache.AxesCacheHandler'
+            - name: AXES_LOCKOUT_PARAMETERS
+              value: ip_address
+            - name: AXES_IPWARE_PROXY_COUNT
+              value: '1'
+            - name: AXES_IPWARE_META_PRECEDENCE_ORDER
+              value: 'HTTP_X_FORWARDED_FOR,REMOTE_ADDR'
+            - name: ALLOW_REGISTRATION
+              value: 'True'
+            - name: ALLOW_GUEST_USERS
+              value: 'True'
+            - name: ALLOW_UPLOAD_VIDEOS
+              value: 'True'
+            - name: SYNC_EXERCISE_IMAGES_CELERY
+              value: 'True'
+            - name: SYNC_EXERCISE_VIDEOS_CELERY
+              value: 'True'
+            - name: SYNC_INGREDIENTS_CELERY
+              value: 'True'
+            - name: SYNC_EXERCISES_CELERY
+              value: 'True'
+            - name: TIME_ZONE
+              value: 'America/Chicago'
+            - name: USE_CELERY
+              value: 'True'
+            - name: USE_RECAPTCHA
+              value: 'False'
+            - name: WGER_USER_GUNICORN
+              value: 'True'
+            - name: ACCESS_TOKEN_LIFETIME
+              valueFrom:
+                secretKeyRef:
+                  key: ACCESS_TOKEN_LIFETIME
+                  name: wger-secrets
+            - name: REFRESH_TOKEN_LIFETIME
+              valueFrom:
+                secretKeyRef:
+                  key: REFRESH_TOKEN_LIFETIME
+                  name: wger-secrets
+            - name: CELERY_BROKER
+              valueFrom:
+                secretKeyRef:
+                  key: CELERY_BROKER
+                  name: wger-secrets
+            - name: DJANGO_BACKEND
+              valueFrom:
+                secretKeyRef:
+                  key: CELERY_BACKEND
+                  name: wger-secrets
+            - name: CELERY_FLOWER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: CELERY_FLOWER_PASSWORD
+                  name: wger-secrets
+            - name: DOWNLOAD_INGREDIENTS_FROM
+              valueFrom:
+                secretKeyRef:
+                  key: DOWNLOAD_INGREDIENTS_FROM
+                  name: wger-secrets
+            - name: EXERCISE_CACHE_TTL
+              valueFrom:
+                secretKeyRef:
+                  key: EXERCISE_CACHE_TTL
+                  name: wger-secrets
+            - name: FROM_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: FROM_EMAIL
+                  name: wger-secrets
+            - name: MIN_ACCOUNT_AGE_TO_TRUST
+              valueFrom:
+                secretKeyRef:
+                  key: MIN_ACCOUNT_AGE_TO_TRUST
+                  name: wger-secrets
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SECRET_KEY
+                  name: wger-secrets
+            - name: SIGNING_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: SIGNING_KEY
+                  name: wger-secrets
+            - name: SITE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: SITE_URL
+                  name: wger-secrets
+            - name: WGER_INSTANCE
+              valueFrom:
+                secretKeyRef:
+                  key: WGER_INSTANCE
+                  name: wger-secrets
+          readinessProbe:
+            httpGet:
+              port: wger-web
+              path: /
+          volumeMounts:
+            - mountPath: "/home/wger/static"
+              name: wger-storage
+              subPath: static
+            - mountPath: "/home/wger/media"
+              name: wger-storage
+              subPath: media
+        - name: celeryworker
+          image: wger/server:latest
+          imagePullPolicy: Always
+          command: ["/start-worker"]
+          volumeMounts:
+            - mountPath: "home/wger/media"
+              name: wger-storage
+              subPath: media
+        - name: celerybeat
+          image: wger/server:latest
+          imagePullPolicy: Always
+          command: ["/start-beat"]
+          volumeMounts:
+            - mountPath: "home/wger/beat/"
+              name: wger-storage
+              subPath: beat
+        - name: nginx
+          image: nginx:stable
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+          - containerPort: 443
+            name: https
+            protocol: TCP
+          volumeMounts:
+            - mountPath: "/wger/static"
+              name: wger-storage
+              subPath: static
+            - mountPath: "/wger/media"
+              name: wger-storage
+              subPath: media
+            - mountPath: "/etc/nginx/conf.d/default.conf/"
+              name: nginx-config
+              subPath: default.conf
