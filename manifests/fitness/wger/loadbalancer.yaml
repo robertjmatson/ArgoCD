@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wger
+  namespace: fitness
+spec:
+  selector:
+    app: wger
+  ports:
+    - name: wger-web
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.130
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresdb
+  namespace: fitness
+  labels:
+    app: postgresdb
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgresdb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: fitness
+  labels:
+    app: redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis
