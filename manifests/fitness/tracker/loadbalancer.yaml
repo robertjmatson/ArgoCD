@@ -10,8 +10,5 @@ spec:
     - name: tracker-web
       port: 80
       targetPort: 8080
-    - name: tracker-https
-      port: 443
-      targetPort: 8080
   type: LoadBalancer
   loadBalancerIP: 10.10.0.133
