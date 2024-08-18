@@ -21,6 +21,13 @@ spec:
         - name: mysql
           image: mysql
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "800Mi"
+#             cpu: "500m"
+            requests:
+              memory: "300Mi"
+#             cpu: "300m"
           ports:
           - containerPort: 3306
             name: db
