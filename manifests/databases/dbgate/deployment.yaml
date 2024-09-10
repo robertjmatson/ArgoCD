@@ -30,7 +30,7 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dbgate-secrets
+                  name: databases-root
                   key: ADMIN_PASSWORD
           volumeMounts:
             - mountPath: "/root/.dbgate"
