@@ -26,6 +26,12 @@ spec:
           - containerPort: 3000
             name: dbgate-web
             protocol: TCP
+          env:
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbgate-secrets
+                  key: ADMIN_PASSWORD
           volumeMounts:
             - mountPath: "/root/.dbgate"
               name: dbgate-storage
