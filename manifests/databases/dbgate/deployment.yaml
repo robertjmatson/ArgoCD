@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbgate
+  namespace: databases
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbgate
+  template:
+    metadata:
+      labels:
+        app: dbgate
+    spec:
+      volumes:
+        - name: dbgate-storage
+          persistentVolumeClaim:
+            claimName: dbgate-pvc
+      containers:
+        - name: dbgate
+          image: dbgate/dbgate:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+            name: dbgate-web
+            protocol: TCP
+          env:
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-root
+                  key: ADMIN_PASSWORD
+          volumeMounts:
+            - mountPath: "/root/.dbgate"
+              name: dbgate-storage

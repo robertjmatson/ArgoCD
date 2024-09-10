@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbgate-lb
+  namespace: databases
+spec:
+  selector:
+    app: dbgate
+  ports:
+    - name: dbgate-web
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.199
