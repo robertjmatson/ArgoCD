@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgres:16.6
   namespace: databases
 spec:
   revisionHistoryLimit: 0
