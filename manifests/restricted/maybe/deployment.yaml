@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maybe
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maybe
+  template:
+    metadata:
+      labels:
+        app: maybe
+    spec:
+      volumes:
+        - name: maybe-storage
+          persistentVolumeClaim:
+            claimName: maybe-pvc
+      containers:
+        - name: maybe
+          image: ghcr.io/maybe-finance/maybe:0.3.0
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
+            name: maybe-web
+            protocol: TCP
+          env:
+            - name: DB_HOST
+              value: postgres-lb.databases.svc.cluster.local
+            - name: DATABASE_DB
+              valueFrom:
+                secretKeyRef:
+                  name: maybe-secrets
+                  key: DATABASE_DB
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: maybe-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: maybe-secrets
+                  key: POSTGRES_USER
+            - name: SELF_HOSTED
+              value: true
+            - name: RAILS_FORCE_SSL
+              value: false
+            - name: RAILS_ASSUME_SSL
+              value: false
+            - name: GOOD_JOB_EXECUTION_MODE
+              value: "async"
+          readinessProbe:
+            httpGet:
+              port: maybe-web
+              path: /
+          volumeMounts:
+            - mountPath: "/rails/storage"
+              name: maybe-storage
