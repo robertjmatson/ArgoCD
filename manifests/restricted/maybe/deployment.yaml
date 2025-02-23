@@ -44,6 +44,11 @@ spec:
                 secretKeyRef:
                   name: maybe-secrets
                   key: POSTGRES_USER
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: maybe-secrets
+                  key: SECRET_KEY_BASE
             - name: SELF_HOSTED
               value: "true"
             - name: RAILS_FORCE_SSL
