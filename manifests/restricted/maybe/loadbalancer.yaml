@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: maybe-lb
-  namespace: default
+  namespace: restricted
 spec:
   selector:
     app: maybe

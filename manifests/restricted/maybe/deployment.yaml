@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: maybe
-  namespace: default
+  namespace: restricted
 spec:
   revisionHistoryLimit: 0
   replicas: 1

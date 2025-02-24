@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: maybe-pvc
-  namespace: default
+  namespace: restricted
 spec:
   accessModes:
     - ReadWriteOnce
