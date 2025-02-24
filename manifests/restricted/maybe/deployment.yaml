@@ -20,7 +20,7 @@ spec:
             claimName: maybe-pvc
       containers:
         - name: maybe
-          image: ghcr.io/maybe-finance/maybe:0.4.1
+          image: ghcr.io/maybe-finance/maybe:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 3000
