@@ -1,43 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-netcloud
+  name: redis-nextcloud
   namespace: cloud
   labels:
-    app: redis-netcloud
+    app: redis-nextcloud
 spec:
   selector:
     matchLabels:
-      app: redis-netcloud
+      app: redis-nextcloud
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis-netcloud
+        app: redis-nextcloud
     spec:
       volumes:
-        - name: redis-netcloud-storage
+        - name: redis-nextcloud-storage
           persistentVolumeClaim:
-            claimName: redis-netcloud-pvc
+            claimName: redis-nextcloud-pvc
       containers:
-      - name: redis-netcloud
+      - name: redis-nextcloud
         image: redis:alpine
         ports:
         - containerPort: 6379
-          name: redis-netcloud
+          name: redis-nextcloud
         volumeMounts:
-        - name: redis-netcloud-storage
+        - name: redis-nextcloud-storage
           mountPath: /data
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-netcloud
+  name: redis-nextcloud
   namespace: cloud
   labels:
-    app: redis-netcloud
+    app: redis-nextcloud
 spec:
   ports:
     - port: 6379
   selector:
-    app: redis-netcloud
+    app: redis-nextcloud

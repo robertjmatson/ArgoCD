@@ -27,7 +27,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: redis-netcloud-pvc
+  name: redis-nextcloud-pvc
   namespace: cloud
 spec:
   accessModes:
