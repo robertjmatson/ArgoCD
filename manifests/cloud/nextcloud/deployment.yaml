@@ -22,7 +22,7 @@ spec:
             claimName: nextcloud-pvc
       containers:
         - name: nextcloud
-          image: nextcloud:latest
+          image: nextcloud:31.0.1
           imagePullPolicy: Always
           lifecycle: ##Optional: should run a nextcloud cronjob for the installed apache browser##
             postStart:
@@ -43,7 +43,7 @@ spec:
             name: nextcloud-web
           env:
             - name: REDIS_HOST
-              value: redis
+              value: redis-nextcloud
             - name: MYSQL_HOST
               value: mariadb
             - name: MYSQL_DATABASE
