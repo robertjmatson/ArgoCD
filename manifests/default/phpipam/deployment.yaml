@@ -20,7 +20,7 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: ipam
-          image: phpipam/phpipam-www:latest
+          image: phpipam/phpipam-www:1.7.3
           imagePullPolicy: Always
           resources:
             limits:
