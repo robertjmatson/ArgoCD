@@ -22,13 +22,6 @@ spec:
         - name: ipam
           image: phpipam/phpipam-www:v1.7.3
           imagePullPolicy: Always
-          resources:
-            limits:
-              memory: "800Mi"
-#             cpu: "500m"
-            requests:
-              memory: "300Mi"
-#             cpu: "300m"
           ports:
           - containerPort: 80
             name: ipam-web
@@ -60,8 +53,3 @@ spec:
               value: localhost
             - name: PATH
               value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-          readinessProbe:
-            httpGet:
-              port: ipam-web
-              path: /
-
