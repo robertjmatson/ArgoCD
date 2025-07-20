@@ -1,46 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: WIKI-SQL
+  name: wiki-sql
   namespace: default
 spec:
   revisionHistoryLimit: 0
   replicas: 1
   selector:
     matchLabels:
-      app: WIKI-SQL
+      app: wiki-sql
   template:
     metadata:
       labels:
-        app: WIKI-SQL
+        app: wiki-sql
     spec:
       volumes:
-        - name: WIKI-SQL-storage
+        - name: wiki-sql-storage
           persistentVolumeClaim:
-            claimName: WIKI-SQL-pvc
+            claimName: wiki-sql-pvc
       containers:
-        - name: WIKI-SQL
+        - name: wiki-sql
           image: postgres:17.5
           imagePullPolicy: Always
           ports:
           - containerPort: 5432
-            name: WIKI-SQL
+            name: wiki-sql
           env:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-Secrets
+                  name: wikijs-Secrets
                   key: DB_USER
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-Secrets
+                  name: wikijs-Secrets
                   key: DB_PASS
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-Secrets
+                  name: wikijs-Secrets
                   key: DB_NAME
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
-              name: WIKI-SQL-storage
+              name: wiki-sql-storage

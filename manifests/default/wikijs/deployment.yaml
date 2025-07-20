@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: WIKIJS
+  name: wikijs
   namespace: default
 spec:
   revisionHistoryLimit: 0
   replicas: 1
   selector:
     matchLabels:
-      app: WIKIJS
+      app: wikijs
   template:
     metadata:
       labels:
-        app: WIKIJS
+        app: wikijs
     spec:
       containers:
-        - name: WIKIJS
+        - name: wikijs
           image: ghcr.io/requarks/wiki:2.5.307
           imagePullPolicy: Always
           ports:
           - containerPort: 80
-            name: WIKIJS-web
+            name: wikijs-web
             protocol: TCP
           env:
             - name: DB_HOST
@@ -30,19 +30,19 @@ spec:
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-secrets
+                  name: wikijs-secrets
                   key: DB_USER
             - name: DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-secrets
+                  name: wikijs-secrets
                   key: DB_PASS
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: WIKIJS-secrets
+                  name: wikijs-secrets
                   key: DB_NAME
           readinessProbe:
             httpGet:
-              port: WIKIJS-web
+              port: wikijs-web
               path: /
