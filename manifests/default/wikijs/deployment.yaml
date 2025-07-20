@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: WIKIJS
+  namespace: default
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: WIKIJS
+  template:
+    metadata:
+      labels:
+        app: WIKIJS
+    spec:
+      containers:
+        - name: WIKIJS
+          image: ghcr.io/requarks/wiki:2.5.307
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: WIKIJS-web
+            protocol: TCP
+          env:
+            - name: DB_HOST
+              value: mysql-lb.databases.svc.cluster.local
+            - name: DB_TYPE
+              value: postgres
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: WIKIJS-secrets
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: WIKIJS-secrets
+                  key: DB_PASS
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: WIKIJS-secrets
+                  key: DB_NAME
+          readinessProbe:
+            httpGet:
+              port: WIKIJS-web
+              path: /

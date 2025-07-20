@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: WIKIJS-lb
+  namespace: default
+spec:
+  selector:
+    app: WIKIJS
+  ports:
+    - name: WIKIJS-web
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.161
