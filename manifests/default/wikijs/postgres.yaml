@@ -17,7 +17,7 @@ spec:
       volumes:
         - name: wiki-sql-storage
           persistentVolumeClaim:
-            claimName: wiki-sql-pvc
+            claimName: wikijs-pvc
       containers:
         - name: wiki-sql
           image: postgres:17.5
