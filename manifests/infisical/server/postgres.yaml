@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 5432
-            name: postgres-infisical
+            name: postgres-port1
             protocol: TCP
           env:
             - name: PGDATA
