@@ -24,11 +24,11 @@ spec:
             protocol: TCP
           env:
             - name: DB_HOST
-              value: wiki-sql
+              value: wiki-sql.default.svc.cluster.local
             - name: DB_TYPE
               value: postgres
             - name: DB_HOST
-              value: '5432'
+              value: "5432"
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
