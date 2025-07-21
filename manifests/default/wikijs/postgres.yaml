@@ -43,5 +43,6 @@ spec:
                   name: wikijs-secrets
                   key: DB_NAME
           volumeMounts:
-            - mountPath: "/var/lib/postgresql/data"
+            - mountPath: "/var/lib/postgresql/data/wiki/"
               name: wiki-sql-storage
+              subPath: db
