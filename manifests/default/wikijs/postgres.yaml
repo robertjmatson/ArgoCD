@@ -25,18 +25,19 @@ spec:
           ports:
           - containerPort: 5432
             name: wiki-sql
+            protocol: TCP
           env:
-            - name: DB_USER
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: wikijs-secrets
                   key: DB_USER
-            - name: DB_PASS
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: wikijs-secrets
                   key: DB_PASS
-            - name: DB_NAME
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: wikijs-secrets
