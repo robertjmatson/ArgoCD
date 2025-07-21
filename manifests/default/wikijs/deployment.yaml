@@ -19,7 +19,7 @@ spec:
           image: ghcr.io/requarks/wiki:2.5.307
           imagePullPolicy: Always
           ports:
-          - containerPort: 80
+          - containerPort: 3000
             name: wikijs-web
             protocol: TCP
           env:
@@ -27,7 +27,7 @@ spec:
               value: wiki-sql.default.svc.cluster.local
             - name: DB_TYPE
               value: postgres
-            - name: DB_HOST
+            - name: DB_PORT
               value: "5432"
             - name: DB_USER
               valueFrom:
