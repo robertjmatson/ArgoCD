@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-infisical
+  namespace: infisical
+  labels:
+    app: redis-infisical
+spec:
+  selector:
+    matchLabels:
+      app: redis-infisical
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-infisical
+    spec:
+      volumes:
+        - name: redis-infisical-storage
+          persistentVolumeClaim:
+            claimName: infisical-redis-pvc
+      containers:
+      - name: redis-infisical
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+          name: redis-infisical
+        volumeMounts:
+        - name: redis-infisical-storage
+          mountPath: /data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-infisical
+  namespace: infisical
+  labels:
+    app: redis-infisical
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis-infisical
+

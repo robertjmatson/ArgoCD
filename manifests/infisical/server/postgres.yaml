@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-infisical
+  namespace: infisical
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-infisical
+  template:
+    metadata:
+      labels:
+        app: postgres-infisical
+    spec:
+      volumes:
+        - name: postgres-infisical-storage
+          persistentVolumeClaim:
+            claimName: infisical-postgres-pvc
+      containers:
+        - name: postgres-infisical
+          image: postgres:17.5
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/wiki
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: infisical-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: infisical-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: infisical-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: postgres-infisical-storage
+              subPath: db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-infisical
+  namespace: infisical
+  labels:
+    app: postgres-infisical
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres-infisical
+

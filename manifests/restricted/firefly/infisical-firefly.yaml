@@ -5,7 +5,7 @@ metadata:
   name: fireflysecrets
   namespace: restricted
 spec:
-  hostAPI: http://infisical-lb.restricted.svc.cluster.local/api
+  hostAPI: http://infisical-lb.infisical.svc.cluster.local/api
   resyncInterval: 300
   authentication:
     serviceToken:
