@@ -27,6 +27,8 @@ spec:
               value: wiki-sql
             - name: DB_TYPE
               value: postgres
+            - name: DB_HOST
+              value: '5432'
             - name: DB_USER
               valueFrom:
                 secretKeyRef:

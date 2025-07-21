@@ -27,6 +27,8 @@ spec:
             name: wiki-sql
             protocol: TCP
           env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/wiki
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -43,6 +45,19 @@ spec:
                   name: wikijs-secrets
                   key: DB_NAME
           volumeMounts:
-            - mountPath: "/var/lib/postgresql/data/wiki/"
+            - mountPath: "/var/lib/postgresql/data/"
               name: wiki-sql-storage
               subPath: db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiki-sql
+  namespace: default
+  labels:
+    app: wiki-sql
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: wiki-sql
