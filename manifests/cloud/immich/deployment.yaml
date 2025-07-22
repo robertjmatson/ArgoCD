@@ -50,7 +50,7 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_HOSTNAME
-              value: infisical-lb.infisical.svc.cluster.local
+              value: postgres-immich.cloud.svc.cluster.local
           readinessProbe:
             httpGet:
               port: immich-web
