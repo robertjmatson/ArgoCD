@@ -42,17 +42,14 @@ spec:
                 secretKeyRef:
                   name: immich-env
                   key: DB_NAME
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: immich-env
-                  key: redis_url
             - name: DB_PORT
               value: "5432"
             - name: DB_HOSTNAME
               value: postgres-immich.cloud.svc.cluster.local
-            - name: REDIS_URL
+            - name: REDIS_HOSTNAME
               value: redis-immich.cloud.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
           volumeMounts:
             - mountPath: "/usr/src/app/upload"
               name: immich-storage
