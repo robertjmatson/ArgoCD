@@ -20,7 +20,7 @@ spec:
             claimName: immich-postgres-pvc
       containers:
         - name: postgres-immich
-          image: postgres:17.5
+          image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
           imagePullPolicy: Always
           ports:
           - containerPort: 5432
