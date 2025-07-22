@@ -51,10 +51,6 @@ spec:
               value: "5432"
             - name: DB_HOSTNAME
               value: postgres-immich.cloud.svc.cluster.local
-          readinessProbe:
-            httpGet:
-              port: immich-web
-              path: /
           volumeMounts:
             - mountPath: "/usr/src/app/upload"
               name: immich-storage
