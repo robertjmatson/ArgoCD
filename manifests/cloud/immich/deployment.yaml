@@ -20,7 +20,7 @@ spec:
             claimName: immich-pvc
       containers:
         - name: immich
-          image: IMAGE:latest
+          image: altran1502/immich-server:v1.135.3
           imagePullPolicy: Always
           ports:
           - containerPort: 2283
