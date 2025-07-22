@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-lb
+  namespace: cloud
+spec:
+  selector:
+    app: immich
+  ports:
+    - name: immich-web
+      port: 80
+      targetPort: 2283
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.162

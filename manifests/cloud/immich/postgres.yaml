@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-immich
+  namespace: cloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-immich
+  template:
+    metadata:
+      labels:
+        app: postgres-immich
+    spec:
+      volumes:
+        - name: postgres-immich-storage
+          persistentVolumeClaim:
+            claimName: immich-postgres-pvc
+      containers:
+        - name: postgres-immich
+          image: postgres:17.5
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/wiki
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: postgres-immich-storage
+              subPath: db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-immich
+  namespace: cloud
+  labels:
+    app: postgres-immich
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres-immich
+

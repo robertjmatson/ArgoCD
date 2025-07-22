@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich
+  namespace: cloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich
+  template:
+    metadata:
+      labels:
+        app: immich
+    spec:
+      volumes:
+        - name: immich-storage
+          persistentVolumeClaim:
+            claimName: immich-pvc
+      containers:
+        - name: immich
+          image: IMAGE:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 2283
+            name: immich-web
+            protocol: TCP
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_PASS
+            - name: DB_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_NAME
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: redis_url
+          readinessProbe:
+            httpGet:
+              port: immich-web
+              path: /
+          volumeMounts:
+            - mountPath: "/usr/src/app/upload"
+              name: immich-storage
+              subPath: upload
