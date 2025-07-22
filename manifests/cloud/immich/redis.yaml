@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-immich
+  namespace: cloud
+  labels:
+    app: redis-immich
+spec:
+  selector:
+    matchLabels:
+      app: redis-immich
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis-immich
+    spec:
+      volumes:
+        - name: redis-immich-storage
+          persistentVolumeClaim:
+            claimName: immich-redis-pvc
+      containers:
+      - name: redis-immich
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+          name: redis-immich
+        volumeMounts:
+        - name: redis-immich-storage
+          mountPath: /data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-immich
+  namespace: cloud
+  labels:
+    app: redis-immich
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis-immich
+
