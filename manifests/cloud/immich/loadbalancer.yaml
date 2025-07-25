@@ -16,15 +16,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-immich
+  name: immich
   namespace: cloud
   labels:
-    app: redis-immich
+    app: redis
 spec:
   ports:
     - port: 6379
   selector:
-    app: redis-immich
+    app: immich
 ---
 apiVersion: v1
 kind: Service
@@ -32,10 +32,10 @@ metadata:
   name: postgres-immich
   namespace: cloud
   labels:
-    app: postgres-immich
+    app: immich
 spec:
   ports:
     - port: 5432
   selector:
-    app: postgres-immich
+    app: immich
 

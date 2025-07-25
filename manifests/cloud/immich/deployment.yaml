@@ -88,9 +88,9 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_HOSTNAME
-              value: postgres-immich
+              value: postgres-immich.cloud.svc.cluster.local
             - name: REDIS_HOSTNAME
-              value: redis-immich
+              value: redis-immich.cloud.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
           volumeMounts:
