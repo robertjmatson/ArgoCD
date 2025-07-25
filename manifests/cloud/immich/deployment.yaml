@@ -93,6 +93,8 @@ spec:
               value: redis-immich.cloud.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: IMMICH_PORT
+              value: "2283"
           volumeMounts:
             - mountPath: "/usr/src/app/upload"
               name: immich-storage
