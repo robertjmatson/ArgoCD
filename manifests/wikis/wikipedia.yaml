@@ -125,13 +125,3 @@ spec:
   resources:
     requests:
       storage: 100Gi
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: wiki1-configmap
-  namespace: wikis
-data:
-  LocalSettings.php: |
-    <?php
-    ?>
