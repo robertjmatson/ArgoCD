@@ -18,6 +18,9 @@ spec:
         - name: wiki1-storage
           persistentVolumeClaim:
             claimName: wiki1-pvc
+        - name: localsettings
+          configMap:
+            name: wiki1-configmap
       containers:
         - name: mariadb
           image: mariadb:10.6
@@ -64,9 +67,12 @@ spec:
             - name: DB_HOSTNAME
               value: wiki1-lb.cloud.svc.cluster.local
           volumeMounts:
-            - mountPath: "/var/www/html"
+            - mountPath: "/var/www/html/images"
               name: wiki1-storage
-              subPath: html
+              subPath: images
+            - mountPath: "/var/www/html/LocalSettings.php"
+              name: wiki1-configmap
+              subPath: LocalSettings.php
 ---
 apiVersion: secrets.infisical.com/v1alpha1
 kind: InfisicalSecret
@@ -119,5 +125,13 @@ spec:
   resources:
     requests:
       storage: 100Gi
-
-
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wiki1-configmap
+  namespace: wikis
+data:
+  LocalSettings.php: |
+    <?php
+    ?>
