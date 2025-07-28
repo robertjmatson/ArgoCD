@@ -67,6 +67,9 @@ spec:
             - mountPath: "/var/www/html/images"
               name: wiki1-storage
               subPath: images
+            - mountPath: /var/www/html/LocalSettings.php
+              name: wiki1-storage
+              subPath: LocalSettings.php
 ---
 apiVersion: secrets.infisical.com/v1alpha1
 kind: InfisicalSecret
