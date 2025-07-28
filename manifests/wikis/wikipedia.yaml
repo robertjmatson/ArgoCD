@@ -33,22 +33,22 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     key: MYSQL_DATABASE
-                    name: wiki1-secrets
+                    name: wiki1-env
               - name: MYSQL_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     key: MYSQL_PASSWORD
-                    name: wiki1-secrets
+                    name: wiki1-env
               - name: MYSQL_USER
                 valueFrom:
                   secretKeyRef:
                     key: MYSQL_USER
-                    name: wiki1-secrets
+                    name: wiki1-env
               - name: MYSQL_ROOT_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     key: MYSQL_ROOT_PASSWORD
-                    name: wiki1-secrets
+                    name: wiki1-env
           volumeMounts:
           - name: wiki1-storage
             mountPath: /var/lib/mysql
