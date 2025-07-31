@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentik
+  namespace: restricted
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentik
+  template:
+    metadata:
+      labels:
+        app: authentik
+    spec:
+      volumes:
+        - name: authentik-storage
+          persistentVolumeClaim:
+            claimName: authentik-pvc
+      containers:
+        - name: redis-authentik
+          image: redis:alpine
+          ports:
+          - containerPort: 6379
+            name: redis-authentik
+          volumeMounts:
+          - name: redis-authentik-storage
+            mountPath: /data
+        - name: postgres-authentik
+          image: postgres
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/wiki
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: postgres-authentik-storage
+              subPath: db
+        - name: authentik-server
+          image: ghcr.io/goauthentik/server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9000
+            name: authentik-web
+            protocol: TCP
+          - containerPort: 9443
+            name: authentik-pvc
+            protocol: TCP
+          env:
+            - name: AUTHENTIK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: SECRET_KEY
+            - name: AUTHENTIK_POSTGRESQL__USER
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_USER
+            - name: AUTHENTIK_POSTGRESQL__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_PASS
+            - name: AUTHENTIK_POSTGRESQL__NAME
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_NAME
+            - name: AUTHENTIK_POSTGRESQL__HOST
+              value: authentik-lb.restricted.svc.cluster.local
+            - name: AUTHENTIK_REDIST__HOST
+              value: authentik-lb.restricted.svc.cluster.local
+          volumeMounts:
+            - mountPath: "/media"
+              name: authentik-storage
+              subPath: media
+            - mountPath: "/templates"
+              name: authentik-storage
+              subPath: templates
+        - name: authentik-worker
+          image: ghcr.io/goauthentik/server:latest
+          imagePullPolicy: Always
+          env:
+            - name: AUTHENTIK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: SECRET_KEY
+            - name: AUTHENTIK_POSTGRESQL__USER
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_USER
+            - name: AUTHENTIK_POSTGRESQL__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_PASS
+            - name: AUTHENTIK_POSTGRESQL__NAME
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-env
+                  key: DB_NAME
+            - name: AUTHENTIK_POSTGRESQL__HOST
+              value: authentik-lb.restricted.svc.cluster.local
+            - name: AUTHENTIK_REDIST__HOST
+              value: authentik-lb.restricted.svc.cluster.local
+          volumeMounts:
+            - mountPath: "/media"
+              name: authentik-storage
+              subPath: media
+            - mountPath: "/templates"
+              name: authentik-storage
+              subPath: templates
+            - mountPath: "/certs"
+              name: authentik-storage
+              subPath: certs
+
+
