@@ -90,9 +90,9 @@ spec:
                   name: authentik-env
                   key: DB_NAME
             - name: AUTHENTIK_POSTGRESQL__HOST
-              value: postgres-authentik
+              value: authentik-lb.restricted.svc.cluster.local
             - name: AUTHENTIK_REDIST__HOST
-              value: redis-authentik
+              value: authentik-lb.restricted.svc.cluster.local
           volumeMounts:
             - mountPath: "/media"
               name: authentik-storage
