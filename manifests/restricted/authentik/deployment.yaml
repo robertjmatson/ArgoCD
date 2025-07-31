@@ -59,6 +59,7 @@ spec:
         - name: authentik-server
           image: ghcr.io/goauthentik/server:latest
           imagePullPolicy: Always
+          command: ["server"]
           ports:
           - containerPort: 9000
             name: authentik-web
@@ -101,6 +102,7 @@ spec:
         - name: authentik-worker
           image: ghcr.io/goauthentik/server:latest
           imagePullPolicy: Always
+          command: ["worker"]
           env:
             - name: AUTHENTIK_SECRET_KEY
               valueFrom:
