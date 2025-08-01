@@ -13,9 +13,5 @@ spec:
     - name: authentik-https
       port: 443
       targetPort: 9443
-    - name: redis
-      port: 6379
-    - name: postgres
-      port: 5432
   type: LoadBalancer
   loadBalancerIP: 10.10.0.169

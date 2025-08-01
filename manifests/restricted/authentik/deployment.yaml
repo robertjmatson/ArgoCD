@@ -90,9 +90,9 @@ spec:
                   name: authentik-env
                   key: DB_NAME
             - name: AUTHENTIK_POSTGRESQL__HOST
-              value: authentik-lb.restricted.svc.cluster.local
+              value: localhost
             - name: AUTHENTIK_REDIST__HOST
-              value: authentik-lb.restricted.svc.cluster.local
+              value: localhost
           volumeMounts:
             - mountPath: "/media"
               name: authentik-storage
@@ -127,9 +127,9 @@ spec:
                   name: authentik-env
                   key: DB_NAME
             - name: AUTHENTIK_POSTGRESQL__HOST
-              value: authentik-lb.restricted.svc.cluster.local
+              value: localhost
             - name: AUTHENTIK_REDIST__HOST
-              value: authentik-lb.restricted.svc.cluster.local
+              value: localhost
           volumeMounts:
             - mountPath: "/media"
               name: authentik-storage
