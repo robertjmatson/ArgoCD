@@ -19,7 +19,7 @@ spec:
             claimName: mysql-pvc
       containers:
         - name: mysql
-          image: mysql
+          image: mysql:9.3.0
           imagePullPolicy: Always
           resources:
             limits:

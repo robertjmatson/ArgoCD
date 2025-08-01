@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki1
+  namespace: wikis
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wiki1
+  template:
+    metadata:
+      labels:
+        app: wiki1
+    spec:
+      volumes:
+        - name: wiki1-storage
+          persistentVolumeClaim:
+            claimName: wiki1-pvc
+        - name: localsettings
+          configMap:
+            name: wiki1-configmap
+      containers:
+        - name: mariadb
+          image: mariadb:10.6
+          ports:
+            - containerPort: 3306
+          resources:
+            limits:
+              memory: "1000Mi"
+            requests:
+              memory: "600Mi"
+          env:
+              - name: MYSQL_DATABASE
+                valueFrom:
+                  secretKeyRef:
+                    key: MYSQL_DATABASE
+                    name: wiki1-env
+              - name: MYSQL_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: MYSQL_PASSWORD
+                    name: wiki1-env
+              - name: MYSQL_USER
+                valueFrom:
+                  secretKeyRef:
+                    key: MYSQL_USER
+                    name: wiki1-env
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: MYSQL_ROOT_PASSWORD
+                    name: wiki1-env
+          volumeMounts:
+          - name: wiki1-storage
+            mountPath: /var/lib/mysql
+            subPath: db
+        - name: wiki1
+          image: mediawiki
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: wiki1-web
+            protocol: TCP
+          env:
+            - name: DB_HOSTNAME
+              value: wiki1-lb.cloud.svc.cluster.local
+          volumeMounts:
+            - mountPath: "/var/www/html/images"
+              name: wiki1-storage
+              subPath: images
+            - mountPath: "/var/www/html/LocalSettings.php"
+              name: localsettings
+              subPath: LocalSettings.php
+---
+apiVersion: secrets.infisical.com/v1alpha1
+kind: InfisicalSecret
+metadata:
+  # Name of of this InfisicalSecret resource
+  name: wikisecrets
+  namespace: wikis
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  # The host that should be used to pull secrets from. If left empty, the value specified in Global configuration will be used
+  hostAPI: http://infisical-lb.infisical.svc.cluster.local/api
+  resyncInterval: 300
+  authentication:
+    serviceToken:
+      serviceTokenSecretReference:
+        secretName: infisical-wiki1
+        secretNamespace: restricted
+      secretsScope:
+        envSlug: prod
+        secretsPath: "/"
+  managedSecretReference:
+    secretName: wiki1-env # <-- the name of kubernetes secret that will be created
+    secretNamespace: wikis # <-- where the kubernetes secret should be created
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiki1-lb
+  namespace: wikis
+spec:
+  selector:
+    app: wiki1
+  ports:
+    - name: wiki1-web
+      port: 80
+      targetPort: 80
+    - name: wiki1-db
+      port: 3306
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.180
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wiki1-pvc
+  namespace: wikis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 100Gi

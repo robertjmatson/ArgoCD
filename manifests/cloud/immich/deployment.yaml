@@ -18,7 +18,50 @@ spec:
         - name: immich-storage
           persistentVolumeClaim:
             claimName: immich-pvc
+        - name: redis-immich-storage
+          persistentVolumeClaim:
+            claimName: immich-redis-pvc
+        - name: postgres-immich-storage
+          persistentVolumeClaim:
+            claimName: immich-postgres-pvc
       containers:
+        - name: redis-immich
+          image: redis:alpine
+          ports:
+          - containerPort: 6379
+            name: redis-immich
+          volumeMounts:
+          - name: redis-immich-storage
+            mountPath: /data
+        - name: postgres-immich
+          image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/wiki
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: immich-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: postgres-immich-storage
+              subPath: db
         - name: immich
           image: altran1502/immich-server:v1.135.3
           imagePullPolicy: Always
@@ -45,12 +88,15 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_HOSTNAME
-              value: postgres-immich.cloud.svc.cluster.local
+              value: immich-lb.cloud.svc.cluster.local
             - name: REDIS_HOSTNAME
-              value: redis-immich.cloud.svc.cluster.local
+              value: immich-lb.cloud.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: IMMICH_PORT
+              value: "2283"
           volumeMounts:
             - mountPath: "/usr/src/app/upload"
               name: immich-storage
               subPath: upload
+

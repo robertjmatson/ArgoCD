@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kiwix
+  namespace: wikis
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kiwix
+  template:
+    metadata:
+      labels:
+        app: kiwix
+    spec:
+      volumes:
+        - name: kiwix-storage
+          persistentVolumeClaim:
+            claimName: kiwix-pvc
+      containers:
+        - name: kiwix
+          image: ghcr.io/kiwix/kiwix-serve:3.7.0
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+            name: kiwix-web
+            protocol: TCP
+          volumeMounts:
+            - mountPath: "/data"
+              name: kiwix-storage
+              subPath: zim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiwix-lb
+  namespace: wikis
+spec:
+  selector:
+    app: kiwix
+  ports:
+    - name: kiwix-web
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.181
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kiwix-pvc
+  namespace: wikis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 100Gi
