@@ -72,7 +72,7 @@ spec:
               value: postgresql
             - name: DATABASE_HOST
               value: manyfold-lb.cloud.svc.cluster.local
-            - name: DATABASE_PORT_PORT
+            - name: DATABASE_PORT
               value: "5432"
             - name: DATABASE_USER
               valueFrom:
