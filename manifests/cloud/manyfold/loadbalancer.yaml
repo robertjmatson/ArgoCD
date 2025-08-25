@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: manyfold-lb
+  namespace: cloud
+spec:
+  selector:
+    app: manyfold
+  ports:
+    - name: manyfold-web
+      port: 80
+      targetPort: 3214
+    - name: redis
+      port: 6379
+    - name: postgres
+      port: 5432
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.163
