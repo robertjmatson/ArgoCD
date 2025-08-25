@@ -67,7 +67,7 @@ spec:
                   name: manyfold-env
                   key: APP_KEY
             - name: REDIS_URL
-              value: redis://localhost:/6379/1
+              value: redis://localhost
             - name: DATABASE_ADAPTER
               value: postgresql
             - name: DATABASE_HOST
