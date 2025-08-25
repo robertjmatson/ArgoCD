@@ -32,6 +32,16 @@ spec:
             name: postgres-port1
             protocol: TCP
           env:
+            - name: PUID
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: PUID
+            - name: PGID
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DGID
             - name: PGDATA
               value: /var/lib/postgresql/data/manyfold
             - name: POSTGRES_USER
