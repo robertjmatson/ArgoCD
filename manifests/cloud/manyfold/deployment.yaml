@@ -67,11 +67,11 @@ spec:
                   name: manyfold-env
                   key: APP_KEY
             - name: REDIS_URL
-              value: redis://manyfold-lb.cloud.svc.cluster.local:/6379/1
+              value: redis://localhost:/6379/1
             - name: DATABASE_ADAPTER
               value: postgresql
             - name: DATABASE_HOST
-              value: manyfold-lb.cloud.svc.cluster.local
+              value: localhost
             - name: DATABASE_PORT
               value: "5432"
             - name: DATABASE_USER
