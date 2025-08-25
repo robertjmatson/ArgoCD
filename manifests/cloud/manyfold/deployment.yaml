@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manyfold
+  namespace: cloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manyfold
+  template:
+    metadata:
+      labels:
+        app: manyfold
+    spec:
+      volumes:
+        - name: manyfold-storage
+          persistentVolumeClaim:
+            claimName: manyfold-pvc
+      containers:
+        - name: redis-manyfold
+          image: redis:alpine
+          ports:
+          - containerPort: 6379
+            name: redis-manyfold
+        - name: postgres-manyfold
+          image: postgres:15
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/manyfold
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: manyfold-storage
+              subPath: db
+        - name: manyfold
+          image: ghcr.io/manyfold3d/manyfold:0.122.0
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3214
+            name: manyfold-web
+            protocol: TCP
+          env:
+            - name: PUID
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: PUID
+            - name: PGID
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: PGID
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: APP_KEY
+            - name: REDIS_URL
+              value: redis://localhost
+            - name: DATABASE_ADAPTER
+              value: postgresql
+            - name: DATABASE_HOST
+              value: localhost
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_PASS
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: manyfold-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/models"
+              name: manyfold-storage
+              subPath: models
+
