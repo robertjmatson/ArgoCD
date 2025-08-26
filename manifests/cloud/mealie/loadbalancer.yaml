@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: manyfold-lb
+  name: mealie-lb
   namespace: cloud
 spec:
   selector:
-    app: manyfold
+    app: mealie
   ports:
-    - name: manyfold-web
+    - name: mealie-web
       port: 80
       targetPort: 9000
   type: LoadBalancer
