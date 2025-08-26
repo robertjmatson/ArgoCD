@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mealie
+  namespace: cloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mealie
+  template:
+    metadata:
+      labels:
+        app: mealie
+    spec:
+      volumes:
+        - name: mealie-storage
+          persistentVolumeClaim:
+            claimName: mealie-pvc
+      containers:
+        - name: postgres-mealie
+          image: postgres:17
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5432
+            name: postgres-port1
+            protocol: TCP
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/mealie
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: mealie-storage
+              subPath: db
+        - name: mealie
+          image: ghcr.io/mealie-recipes/mealie:v3.1.2
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9000
+            name: mealie-web
+            protocol: TCP
+          env:
+            - name: PUID
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: PUID
+            - name: PGID
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: PGID
+            - name: BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: BASE_URL
+            - name: DB_ENGINE
+              value: postgres
+            - name: ALLOW_SIGNUP
+              value: "false"
+            - name: POSTGRES_SERVER
+              value: localhost
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-env
+                  key: DB_NAME
+          volumeMounts:
+            - mountPath: "/app/data/"
+              name: mealie-storage
+              subPath: appdata
+

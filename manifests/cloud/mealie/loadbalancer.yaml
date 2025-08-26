@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: manyfold-lb
+  namespace: cloud
+spec:
+  selector:
+    app: manyfold
+  ports:
+    - name: manyfold-web
+      port: 80
+      targetPort: 9000
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.164
