@@ -50,3 +50,12 @@ spec:
             - mountPath: "/metadata"
               name: audiobookshelf-storage
               subPath: metadata
+            - mountPath: "/networking"
+              name: audiobookshelf-storage
+              subPath: networking
+            - mountPath: "/programming"
+              name: audiobookshelf-storage
+              subPath: programming
+            - mountPath: "/sysadmin"
+              name: audiobookshelf-storage
+              subPath: sysadmin
