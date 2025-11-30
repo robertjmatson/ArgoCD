@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grocy
+  namespace: cloud
+spec:
+  revisionHistoryLimit: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grocy
+  template:
+    metadata:
+      labels:
+        app: grocy
+    spec:
+      volumes:
+        - name: grocy-storage
+          persistentVolumeClaim:
+            claimName: grocy-pvc
+      containers:
+        - name: grocy
+          image: lscr.io/linuxserver/grocy:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: grocy-web
+            protocol: TCP
+          env:
+          volumeMounts:
+            - mountPath: "/config"
+              name: grocy-storage
+              subPath: appdata
+
