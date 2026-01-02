@@ -20,7 +20,7 @@ spec:
             claimName: gitea-pvc
       containers:
         - name: gitea
-          image: gitea/gitea:latest
+          image: gitea/gitea:1.25
           imagePullPolicy: Always
           ports:
           - containerPort: 3000

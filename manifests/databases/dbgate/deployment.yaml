@@ -20,7 +20,7 @@ spec:
             claimName: dbgate-pvc
       containers:
         - name: dbgate
-          image: dbgate/dbgate:latest
+          image: dbgate/dbgate:6.8.2
           imagePullPolicy: Always
           ports:
           - containerPort: 3000

@@ -19,7 +19,7 @@ spec:
             claimName: influxdb-pvc
       containers:
         - name: influxdb
-          image: influxdb
+          image: influxdb:2.8.0
           imagePullPolicy: Always
           ports:
           - containerPort: 8086
