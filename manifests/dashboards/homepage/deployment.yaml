@@ -15,6 +15,9 @@ spec:
         app: homepage
     spec:
       volumes:
+        - name: homepage-storage
+          persistentVolumeClaim:
+          claimName: homepage-pvc
         - name: homepage-nfs-storage
           nfs:
             server: 192.168.49.17
@@ -35,3 +38,5 @@ spec:
           volumeMounts:
             - mountPath: "/app/config"
               name: homepage-nfs-storage
+            - mountPath: "/app/config2"
+              name: homepage-storage
